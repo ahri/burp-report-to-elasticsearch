@@ -1,4 +1,4 @@
-package burp.eventStream;
+package common;
 
 import burp.IHttpRequestResponse;
 import burp.IHttpService;

@@ -1,6 +1,7 @@
 package burp.eventStream.config;
 
 import burp.eventStream.Config;
+import burp.eventStream.EventStream;
 
 import java.util.prefs.Preferences;
 
@@ -12,6 +13,34 @@ public class JavaPrefsConfig implements Config
     }
 
     private final Preferences prefs = Preferences.userRoot().node("BurpEventStreamExtension");
+
+    @Override
+    public EventStream.Type type()
+    {
+        EventStream.Type type = null;
+
+        try
+        {
+            type = EventStream.Type.valueOf(prefs.get(Config.TYPE_KEY, Config.DEFAULT_TYPE.name()));
+        }
+        catch (IllegalArgumentException ignore)
+        {
+        }
+
+        if (type == null)
+        {
+            prefs.put(Config.TYPE_KEY, Config.DEFAULT_TYPE.name());
+            return Config.DEFAULT_TYPE;
+        }
+
+        return type;
+    }
+
+    @Override
+    public void type(EventStream.Type val)
+    {
+        prefs.put(Config.TYPE_KEY, val.name());
+    }
 
     @Override
     public String elasticSearchHost()

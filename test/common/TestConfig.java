@@ -1,7 +1,22 @@
-package burp.eventStream;
+package common;
+
+import burp.eventStream.Config;
+import burp.eventStream.EventStream;
 
 public abstract class TestConfig implements Config
 {
+    @Override
+    public EventStream.Type type()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void type(EventStream.Type val)
+    {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public String elasticSearchHost()
     {

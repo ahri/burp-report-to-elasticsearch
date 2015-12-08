@@ -2,33 +2,17 @@ package burp.eventStream;
 
 import burp.IScanIssue;
 
-public class EventStream
+public interface EventStream
 {
-    private final Config config;
-    private final Http http;
-
-    public EventStream(Config config, Http http)
+    enum Type
     {
-        this.config = config;
-        this.http = http;
+        STDOUT,
+        ELASTICSEARCH,
     }
 
-    public void issueDiscovered(IScanIssue issue)
-    {
-        http.post(config.elasticSearchHost(), config.elasticSearchPort(), config.elasticSearchPrefix(),
-                "{" +
-                        "\"url\": \"" + issue.getUrl() + "\"" +
-                        "," +
-                        "\"name\": \"" + issue.getIssueName() + "\"" +
-                        "," +
-                        "\"type\": " + issue.getIssueType() +
-                        "," +
-                        "\"severity\": \"" + issue.getSeverity() + "\"" +
-                        "," +
-                        "\"confidence\": \"" + issue.getConfidence() + "\"" +
-                        "," +
-                        "\"detail\": \"" + issue.getIssueDetail() + "\"" +
-                "}"
-        );
-    }
+    void onIssueDiscovered(String scanId, IScanIssue issue);
+
+    void onScanStart(String scanId, long startTimeMs);
+
+    void onScanEnd(String scanId, long startTimeMs, long endTimeMs, long durationS);
 }
