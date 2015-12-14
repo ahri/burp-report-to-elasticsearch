@@ -18,6 +18,7 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
     private ScanState scanState;
     private ReconfigurableEventStream eventStream;
 
+    @Override
     public void registerExtenderCallbacks(final IBurpExtenderCallbacks callbacks)
     {
         callbacks.printOutput("TRACE: cooldown time after last scanner behaviour " + guessCooldownTime(new DefaultedConfig(callbacks.saveConfig(), new DefaultedConfig.Output()
@@ -118,10 +119,10 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
 
     private static long guessCooldownTime(DefaultedConfig burpConfig)
     {
-        return (burpConfig.getLong("scanner.maxanalysistimeperitem", 0) * 1000) +
-                burpConfig.getLong("scanner.throttleinterval", 0) +
-                burpConfig.getLong("scanner.pausebeforeretry", 0) +
-                burpConfig.getLong("suite.normaltimeoutmilli", 0)
+        return (burpConfig.getLong("scanner.maxanalysistimeperitem", 120) * 1000) +
+                burpConfig.getLong("scanner.throttleinterval", 500) +
+                burpConfig.getLong("scanner.pausebeforeretry", 2000) +
+                burpConfig.getLong("suite.normaltimeoutmilli", 120000)
         ;
     }
 
@@ -142,7 +143,7 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
 
             if (val == null)
             {
-                output.println("TRACE: missing config value for " + key);
+                output.println("TRACE: missing Burp config value for " + key + ". Defaulting to " + defaultValue);
                 return defaultValue;
             }
 
@@ -152,7 +153,7 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
             }
             catch (NumberFormatException ex)
             {
-                output.println("TRACE: invalid config value for " + key + "; " + val);
+                output.println("TRACE: invalid Burp config value for " + key + "; " + val + ". Defaulting to " + defaultValue);
                 return defaultValue;
             }
         }
@@ -162,13 +163,6 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
             void println(String str);
         }
     }
-
-
-    private static String generateScanId()
-    {
-        return "abc123";
-    }
-
 
     @Override
     public void newScanIssue(IScanIssue issue)
