@@ -20,7 +20,7 @@ An extension that passes along Issues discovered by Burp to either stdout or an 
 
 ## Configuration
 
-When running Burp via the UI configuration is _always_ sourced from the Java Preferences store. Conversely, when running
+When running Burp via the UI, configuration is _always_ sourced from the Java Preferences store. Conversely, when running
 headless the configuration is _always_ sourced from environment variables.
 
 The environment variables are guessable from UI, i.e.
