@@ -1,6 +1,6 @@
 # Name
 
-Burp Event Stream
+Burp Report to ElasticSearch
 
 
 ## Version
@@ -15,7 +15,7 @@ Adam Piper <adam@ahri.net>
 
 ## Description
 
-An extension that passes along Issues discovered by Burp to either stdout or an ElasticSearch database.
+An extension that reports Issues discovered by Burp to either stdout or an ElasticSearch database.
 
 
 ## Configuration
