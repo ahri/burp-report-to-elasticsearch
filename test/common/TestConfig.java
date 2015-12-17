@@ -18,6 +18,18 @@ public abstract class TestConfig implements Config
     }
 
     @Override
+    public boolean autoQuit()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String staticScanId()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String elasticSearchHost()
     {
         throw new UnsupportedOperationException();

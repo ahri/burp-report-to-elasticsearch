@@ -5,7 +5,7 @@ Burp Event Stream
 
 ## Version
 
-0.0.2
+0.0.3
 
 
 ## Author
@@ -25,10 +25,15 @@ headless the configuration is _always_ sourced from environment variables.
 
 The environment variables are guessable from UI, i.e.
 
-    - "Type"                 -> BURP_EVENTSTREAM_TYPE
-    - "Elasticsearch Host"   -> BURP_EVENTSTREAM_ELASTICSEARCH_HOST
-    - "Elasticsearch Port"   -> BURP_EVENTSTREAM_ELASTICSEARCH_PORT
-    - "Elasticsearch Prefix" -> BURP_EVENTSTREAM_ELASTICSEARCH_PREFIX
+    - "Type"                 -> BURP_R2E_TYPE
+    - "Elasticsearch Host"   -> BURP_R2E_ELASTICSEARCH_HOST
+    - "Elasticsearch Port"   -> BURP_R2E_ELASTICSEARCH_PORT
+    - "Elasticsearch Prefix" -> BURP_R2E_ELASTICSEARCH_PREFIX
+
+Additionally, some configuration is available only for headless mode:
+
+    - BURP_R2E_STATIC_SCAN_ID - set a scan ID of your choosing rather than having UUIDs generated
+    - BURP_R2E_AUTO_QUIT - quit after the first scan ends (set to "true" to enable)
 
 
 #### Notes

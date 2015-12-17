@@ -51,4 +51,9 @@ public class TestPlatform implements ScanWatcher.Platform
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void exit(int code)
+    {
+    }
 }

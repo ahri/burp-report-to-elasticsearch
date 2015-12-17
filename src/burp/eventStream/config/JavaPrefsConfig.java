@@ -12,7 +12,7 @@ public class JavaPrefsConfig implements Config
         output.println("TRACE: loading config from Java Preferences store");
     }
 
-    private final Preferences prefs = Preferences.userRoot().node("BurpEventStreamExtension");
+    private final Preferences prefs = Preferences.userRoot().node("BurpExtensionReportToElasticSearch");
 
     @Override
     public EventStream.Type type()
@@ -40,6 +40,18 @@ public class JavaPrefsConfig implements Config
     public void type(EventStream.Type val)
     {
         prefs.put(Config.TYPE_KEY, val.name());
+    }
+
+    @Override
+    public boolean autoQuit()
+    {
+        return Config.DEFAULT_AUTO_QUIT;
+    }
+
+    @Override
+    public String staticScanId()
+    {
+        return Config.DEFAULT_STATIC_SCAN_ID;
     }
 
     @Override

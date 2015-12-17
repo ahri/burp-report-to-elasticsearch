@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ElasticSearchTest
 {
-    private final Config config = new TestConfig()
+    private static final Config config = new TestConfig()
     {
         @Override
         public String elasticSearchHost()
@@ -35,7 +35,7 @@ public class ElasticSearchTest
         }
     };
 
-    private final IScanIssue scanIssue = new TestScanIssue()
+    private static final IScanIssue scanIssue = new TestScanIssue()
     {
         @Override
         public URL getUrl()

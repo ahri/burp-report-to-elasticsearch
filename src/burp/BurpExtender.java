@@ -1,10 +1,10 @@
 package burp;
 
+import burp.eventStream.Config;
+import burp.eventStream.ScanState;
+import burp.scanWatcher.ScanWatcher;
 import burp.ui.ConfigTab;
 import burp.ui.ReconfigurableEventStream;
-import burp.ui.ScanState;
-import burp.eventStream.Config;
-import burp.scanWatcher.ScanWatcher;
 
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -41,7 +41,7 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
 
         eventStream = new ReconfigurableEventStream(config, callbacks);
 
-        scanState = new ScanState();
+        scanState = new ScanState(config);
 
         scanWatcher = new ScanWatcher(
                 new ScanWatcher.Platform()
@@ -72,8 +72,15 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
                             e.printStackTrace();
                         }
                     }
+
+                    @Override
+                    public void exit(int code)
+                    {
+                        System.exit(code);
+                    }
                 },
-                new ScanWatcher.CooldownCalculator()
+                config,
+                 new ScanWatcher.CooldownCalculator()
                 {
                     @Override
                     public long milliseconds()
@@ -100,10 +107,10 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
                     }
 
                     @Override
-                    public void onScanEnd()
+                    public void onScanEnd(long cooldownMs)
                     {
                         final long startTimeMs = scanState.startTimeMs();
-                        final long endTimeMs = System.currentTimeMillis();
+                        final long endTimeMs = System.currentTimeMillis() - cooldownMs;
 
                         eventStream.onScanEnd(scanState.currentScanId(), startTimeMs, endTimeMs, (endTimeMs - startTimeMs) / 1000);
                     }

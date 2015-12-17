@@ -1,5 +1,7 @@
 package burp.scanWatcher;
 
+import burp.eventStream.Config;
+
 public class ScanWatcher
 {
     private static long NO_REQUEST_SENT = -1L;
@@ -8,7 +10,7 @@ public class ScanWatcher
 
     private Long lastRequestTime = NO_REQUEST_SENT;
 
-    public ScanWatcher(final Platform platform, final CooldownCalculator cooldownCalculator, final Events events, final int pollingIntervalMs)
+    public ScanWatcher(final Platform platform, final Config config, final CooldownCalculator cooldownCalculator, final Events events, final int pollingIntervalMs)
     {
         this.platform = platform;
         this.events = events;
@@ -22,10 +24,21 @@ public class ScanWatcher
                 {
                     synchronized (lastRequestTime)
                     {
-                        if (lastRequestTime != NO_REQUEST_SENT && lastRequestTime + cooldownCalculator.milliseconds() < platform.currentTimeMs())
+                        if (lastRequestTime != NO_REQUEST_SENT)
                         {
-                            events.onScanEnd();
-                            lastRequestTime = NO_REQUEST_SENT;
+                            final long cooldownMs = cooldownCalculator.milliseconds();
+                            if (lastRequestTime + cooldownMs < platform.currentTimeMs())
+                            {
+                                events.onScanEnd(cooldownMs);
+
+                                if (config.autoQuit())
+                                {
+                                    platform.exit(0);
+                                    break;
+                                }
+
+                                lastRequestTime = NO_REQUEST_SENT;
+                            }
                         }
                     }
 
@@ -55,6 +68,8 @@ public class ScanWatcher
         void startOnNewThread(String name, Runnable runnable);
 
         void sleep(int ms);
+
+        void exit(int code);
     }
 
     public interface CooldownCalculator
@@ -66,6 +81,6 @@ public class ScanWatcher
     {
         void onScanStart();
 
-        void onScanEnd();
+        void onScanEnd(long cooldownMs);
     }
 }

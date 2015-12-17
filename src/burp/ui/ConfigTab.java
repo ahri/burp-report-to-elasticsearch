@@ -46,7 +46,7 @@ public class ConfigTab implements ITab
     @Override
     public String getTabCaption()
     {
-        return "Event Stream";
+        return "ElasticSearch";
     }
 
     @Override
