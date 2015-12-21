@@ -5,7 +5,7 @@ Burp Report to ElasticSearch
 
 ## Version
 
-0.0.3
+0.0.4
 
 
 ## Author
