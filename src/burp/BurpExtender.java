@@ -6,6 +6,7 @@ import burp.scanWatcher.ScanWatcher;
 import burp.ui.ConfigTab;
 import burp.ui.ReconfigurableEventStream;
 
+import java.awt.GraphicsEnvironment;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -121,7 +122,10 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
         callbacks.registerScannerListener(this);
         callbacks.registerHttpListener(this);
 
-        callbacks.addSuiteTab(new ConfigTab(config, eventStream));
+        if (!GraphicsEnvironment.isHeadless())
+        {
+            callbacks.addSuiteTab(new ConfigTab(config, eventStream));
+        }
     }
 
     private static long guessCooldownTime(DefaultedConfig burpConfig)

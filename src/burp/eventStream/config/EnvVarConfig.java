@@ -26,7 +26,10 @@ public class EnvVarConfig implements Config
         EventStream.Type type = DEFAULT_TYPE;
         try
         {
-            type = EventStream.Type.valueOf(envEventstreamType);
+            if (envEventstreamType != null)
+            {
+                type = EventStream.Type.valueOf(envEventstreamType);
+            }
         }
         catch (IllegalArgumentException ignore)
         {

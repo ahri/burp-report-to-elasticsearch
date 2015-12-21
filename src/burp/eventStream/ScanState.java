@@ -1,7 +1,5 @@
 package burp.eventStream;
 
-import sun.plugin.dom.exception.InvalidStateException;
-
 import java.util.UUID;
 
 public class ScanState
@@ -47,5 +45,13 @@ public class ScanState
     private static String generateNewId()
     {
         return UUID.randomUUID().toString();
+    }
+
+    public class InvalidStateException extends RuntimeException
+    {
+        public InvalidStateException(String message)
+        {
+            super(message);
+        }
     }
 }
