@@ -5,15 +5,39 @@ import burp.eventStream.Config;
 public class ScanWatcher
 {
     private static long NO_REQUEST_SENT = -1L;
+    private final Object lock = new Object();
     private final Platform platform;
+    private final CooldownCalculator cooldownCalculator;
     private final Events events;
+    private final int pollingIntervalMs;
 
     private Long lastRequestTime = NO_REQUEST_SENT;
+    private boolean started = false;
 
-    public ScanWatcher(final Platform platform, final Config config, final CooldownCalculator cooldownCalculator, final Events events, final int pollingIntervalMs)
+    public ScanWatcher(final Platform platform, final CooldownCalculator cooldownCalculator, final Events events, final int pollingIntervalMs)
     {
         this.platform = platform;
+        this.cooldownCalculator = cooldownCalculator;
         this.events = events;
+        this.pollingIntervalMs = pollingIntervalMs;
+    }
+
+    public static class InvalidStateException extends RuntimeException
+    {
+        public InvalidStateException(String message)
+        {
+            super(message);
+        }
+    }
+
+    public void start()
+    {
+        if (started)
+        {
+            throw new InvalidStateException("Thread already started");
+        }
+
+        started = true;
 
         platform.startOnNewThread("scanWatcher", new Runnable()
         {
@@ -22,7 +46,7 @@ public class ScanWatcher
             {
                 while (true)
                 {
-                    synchronized (lastRequestTime)
+                    synchronized (lock)
                     {
                         if (lastRequestTime != NO_REQUEST_SENT)
                         {
@@ -30,13 +54,6 @@ public class ScanWatcher
                             if (lastRequestTime + cooldownMs < platform.currentTimeMs())
                             {
                                 events.onScanEnd(cooldownMs);
-
-                                if (config.autoQuit())
-                                {
-                                    platform.exit(0);
-                                    break;
-                                }
-
                                 lastRequestTime = NO_REQUEST_SENT;
                             }
                         }
@@ -50,7 +67,7 @@ public class ScanWatcher
 
     public void onScannerActivity()
     {
-        synchronized (lastRequestTime)
+        synchronized (lock)
         {
             if (lastRequestTime == NO_REQUEST_SENT)
             {
@@ -68,8 +85,6 @@ public class ScanWatcher
         void startOnNewThread(String name, Runnable runnable);
 
         void sleep(int ms);
-
-        void exit(int code);
     }
 
     public interface CooldownCalculator

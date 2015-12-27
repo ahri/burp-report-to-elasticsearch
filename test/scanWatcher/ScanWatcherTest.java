@@ -2,7 +2,6 @@ package scanWatcher;
 
 import burp.scanWatcher.ScanWatcher;
 
-import common.TestConfig;
 import common.TestPlatform;
 import org.junit.Test;
 
@@ -35,8 +34,6 @@ public class ScanWatcherTest
 
         new ScanWatcher(
                 new TestPlatform(0),
-                new TestConfig()
-                {},
                 new ScanWatcher.CooldownCalculator()
                 {
                     @Override
@@ -62,8 +59,6 @@ public class ScanWatcherTest
 
         new ScanWatcher(
                 new TestPlatform(0),
-                new TestConfig()
-                {},
                 new ScanWatcher.CooldownCalculator()
                 {
                     @Override
@@ -94,14 +89,6 @@ public class ScanWatcherTest
 
         new ScanWatcher(
                 new TestPlatform(firstTime, secondTime),
-                new TestConfig()
-                {
-                    @Override
-                    public boolean autoQuit()
-                    {
-                        return false;
-                    }
-                },
                 new ScanWatcher.CooldownCalculator()
                 {
                     @Override
@@ -115,56 +102,5 @@ public class ScanWatcherTest
         ).onScannerActivity();
 
         while (!events.ended);
-    }
-
-    class ExitTrackingTestPlatform extends TestPlatform
-    {
-        public boolean exited = false;
-
-        public ExitTrackingTestPlatform(long... currentTimeMs)
-        {
-            super(currentTimeMs);
-        }
-
-        @Override
-        public void exit(int code)
-        {
-            exited = true;
-        }
-    }
-
-    @Test
-    public void givenAConfigurationWithAutoQuitSet_whenCooldownHit_thenPlatformExit() throws Exception
-    {
-        final int firstTime = 1000;
-        final int cooldown = 500;
-        final int secondTime = firstTime + cooldown + 1;
-
-        final TrackableEvents events = new TrackableEvents();
-
-        final ExitTrackingTestPlatform platform = new ExitTrackingTestPlatform(firstTime, secondTime);
-        new ScanWatcher(
-                platform,
-                new TestConfig()
-                {
-                    @Override
-                    public boolean autoQuit()
-                    {
-                        return true;
-                    }
-                },
-                new ScanWatcher.CooldownCalculator()
-                {
-                    @Override
-                    public long milliseconds()
-                    {
-                        return cooldown;
-                    }
-                },
-                events,
-                1
-        ).onScannerActivity();
-
-        while (!platform.exited);
     }
 }

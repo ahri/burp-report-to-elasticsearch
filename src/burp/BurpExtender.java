@@ -73,15 +73,8 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
                             e.printStackTrace();
                         }
                     }
-
-                    @Override
-                    public void exit(int code)
-                    {
-                        System.exit(code);
-                    }
                 },
-                config,
-                 new ScanWatcher.CooldownCalculator()
+                new ScanWatcher.CooldownCalculator()
                 {
                     @Override
                     public long milliseconds()
@@ -114,6 +107,12 @@ public class BurpExtender implements IBurpExtender, IScannerListener, IHttpListe
                         final long endTimeMs = System.currentTimeMillis() - cooldownMs;
 
                         eventStream.onScanEnd(scanState.currentScanId(), startTimeMs, endTimeMs, (endTimeMs - startTimeMs) / 1000);
+
+
+                        if (config.autoQuit())
+                        {
+                            System.exit(0);
+                        }
                     }
                 }, 5000
         );

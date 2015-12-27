@@ -2,7 +2,7 @@ package burp.eventStream;
 
 import common.TestConfig;
 import org.junit.Test;
-import sun.plugin.dom.exception.InvalidStateException;
+
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class ScanStateTest
         }
     };
 
-    @Test(expected=InvalidStateException.class)
+    @Test(expected=ScanState.InvalidStateException.class)
     public void givenScanState_whenScanIdRequestedBeforeStartEventReceived_thenExpectException() throws Exception
     {
         final ScanState scanState = new ScanState(noStaticScanIdConfig);
